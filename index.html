@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP FORM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<?php
+// define variables and set to empty values
+$nameErr = $emailErr = $passErr = "";
+$name = $email = $password = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (empty($_POST["name"])) {
+    $nameErr = "Username is required";
+  } else {
+    $name = test_input($_POST["name"]);
+  }
+
+  if (empty($_POST["email"])) {
+    $emailErr = "You Forgot to Enter Your Email!";
+  } else {
+    $email = test_input($_POST["email"]);
+    // check if e-mail address syntax is valid
+    if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/",$email)) {
+        $emailErr = "You Entered An Invalid Email Format"; 
+    }else {
+      $email = test_input($_POST["email"]);}
+    }
+
+  if (empty($_POST["password"])) {
+    $passErr = "Password is required";
+  } else {
+    $password = test_input($_POST["password"]);
+  }
+//name whitespece and number validation
+  $name = test_input($_POST["name"]);
+  if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
+    $nameErr = "Only letters and white space allowed";
+  }
+
+//password stength,number,lowercase and capital letter verification 
+  if(!empty($_POST["password"]) && ($_POST["password"])) {
+    $password = test_input($_POST["password"]);
+    if (strlen($_POST["password"]) <= '8') {
+        $passErr = "Your Password Must Contain At Least 8 Characters!";
+    }
+    elseif(!preg_match("#[0-9]+#",$password)) {
+        $passdErr = "Your Password Must Contain At Least 1 Number!";
+    }
+    elseif(!preg_match("#[A-Z]+#",$password)) {
+        $passErr = "Your Password Must Contain At Least 1 Capital Letter!";
+    }
+    elseif(!preg_match("#[a-z]+#",$password)) {
+        $passErr = "Your Password Must Contain At Least 1 Lowercase Letter!";
+    } 
+}
+
+}
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
+?>
+    <div class="mainbody">
+        <div class="formbody">
+            <p>LOG IN</p>
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                <table>
+
+                    <tr>
+                      <td><span class="error"> <?php echo $nameErr;?></span></td>
+                    </tr>
+                    <tr>  
+                        <td><label class="login-label">User Name</label></td>
+                    </tr>
+                    <tr>
+                        <td> <input name="name" type="text" class="input" require></td>   
+                    </tr>
+
+                    <tr>
+                        <td><span class="error"><?php echo $emailErr;?></span></td>
+                    </tr>
+                    <tr>
+                        <td><label name="Email" class="login-label">Email</label></td> 
+                    </tr>
+                    <tr>
+                        <td> <input type="text" class="input"></td>
+                    </tr>
+
+
+                    <tr>
+                        <td><span class="error"> <?php echo $passErr;?></span></td>
+                    </tr>
+                    <tr>
+                        <td><label  class="login-label" >password</label></td>      
+                    </tr>
+                    <tr>
+                        <td><input type="password" name="password" class="input" require></td> 
+                     </tr>
+                     
+
+                     <tr> <td><input type="submit" value="Log in" class="submit"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
